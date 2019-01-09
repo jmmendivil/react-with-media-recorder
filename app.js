@@ -1,62 +1,44 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import VideoRecorder from './VideoRecorderComponent'
+import withVideoRecorder from './VideoRecorderComponentHOC'
 
 const videoConstraints = {
   audio: true,
   video: true
 }
 
-window.ask = false
-window.record = false
-window.stop = false
-
-class WithVideo extends React.Component {
-  constructor () {
-    super()
-    this.state = {
-      ask: window.ask,
-      record: window.record,
-      stop: window.stop
-    }
+class Controls extends React.Component {
+  componentDidMount () {
+    this.props.videoRecorder.onRecordStart(function (stopRecordMethod) {
+      console.log('Record START!')
+    })
+    this.props.videoRecorder.onRecordStop(function (videoBlob) {
+      console.log('Record END')
+    })
   }
   render () {
-    const { ask, record, stop } = this.state
-
+    const { videoRecorder } = this.props
     return (
       <div>
-        <button onClick={() => this.setState({ ask: true })}>start</button>
-        <button onClick={() => this.setState({ record: true })}>record</button>
-        <button onClick={() => this.setState({ stop: true })}>stop</button>
-        <VideoRecorder
-
-          askPermissions={ask}
-          startRecord={record}
-          stopRecord={stop}
-
-          constraints={videoConstraints}
-          recordTimerMs={5000}
-          onRecordStart={(record) => {
-            console.log('Record Start')
-            console.log(record)
-            // avoid infinite loop when record stops
-            this.setState({ record: false })
-          }}
-          onRecordStop={(videoBlob) => {
-            console.log('Record ended')
-            console.log(videoBlob)
-            this.setState({ stop: false })
-          }}
-          onError={function (e) {
-            console.log('Error>>>', e)
-          }}
-        />
+        <span>Video recorder - {(videoRecorder.isRecording) && 'Recording...'}</span>
+        <div>{videoRecorder.videoPreviewElement}</div>
+        <div>{videoRecorder.videoRecordedElement}</div>
+        <button onClick={videoRecorder.askPermissions}>[>] start</button>
+        {(videoRecorder.isRecording)
+          ? <button onClick={videoRecorder.stopRecord}>[x] stop</button>
+          : <button onClick={videoRecorder.record}>[o] record</button>
+        }
       </div>
     )
   }
 }
 var mountNode = document.getElementById('app')
+const WithVideo = withVideoRecorder(Controls)
 ReactDOM.render(
-  <WithVideo />,
+  <WithVideo
+    constraints={videoConstraints}
+    recordDelayMs={2000}
+    recordTimerMs={5000}
+  />,
   mountNode
 )

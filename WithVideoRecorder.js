@@ -23,7 +23,7 @@ function withVideoRecorder (WrappedComponent) {
       // Actions
       this.askPermissions = this.askPermissions.bind(this)
       this.closeMedia = this.closeMedia.bind(this)
-      this.pause = this.pause.bind(this)
+      this.pauseMedia = this.pauseMedia.bind(this)
       this.record = this.record.bind(this)
       this.stopRecord = this.stopRecord.bind(this)
       this.saveVideoBlob = this.saveVideoBlob.bind(this)
@@ -55,7 +55,7 @@ function withVideoRecorder (WrappedComponent) {
         this.mediaStream.getTracks().map(t => t.stop())
       } else console.error('No media to stop. Is media active?')
     }
-    pause () {
+    pauseMedia () {
       if (this.isMediaActive()) {
         this.mediaStream.getTracks().forEach(t => {
           t.enabled = !t.enabled
@@ -153,13 +153,13 @@ function withVideoRecorder (WrappedComponent) {
         videoPreviewElement: <video ref={this.previewRef} autoPlay playsInline muted />,
         askPermissions: this.askPermissions,
         closeMedia: this.closeMedia,
-        pause: this.pause,
+        pauseMedia: this.pauseMedia,
         record: this.record,
         stopRecord: this.stopRecord,
         onRecordStart: this.setRecordStartCb,
         onRecordStop: this.setRecordStopCb
       }
-      const { recordDelayMs, recordTimerMs, constraints } = this.props
+      const { recordDelayMs, recordTimerMs, constraints, ...passedProps } = this.props
       return <WrappedComponent videoRecorder={videoRecorder} {...passedProps} />
     }
   }

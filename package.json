@@ -1,14 +1,19 @@
 {
-  "name": "mediaComponent",
+  "name": "withmediarecorder",
   "version": "1.0.0",
-  "description": "",
+  "description": "React HOC for MediaRecorder interface",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel index.html"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "react",
+    "mediarecorder",
+    "record",
+    "media"
+  ],
+  "author": "Juan Mendivil (http://mendivil.mx)",
   "license": "ISC",
   "browserslist": [
     "last 1 Chrome version",
@@ -23,5 +28,14 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmmendivil/react-with-media-recorder.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jmmendivil/react-with-media-recorder/issues"
+  },
+  "homepage": "https://github.com/jmmendivil/react-with-media-recorder#readme"
 }

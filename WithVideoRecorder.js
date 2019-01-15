@@ -1,3 +1,5 @@
+// TODO:
+// - add error boundary
 import React from 'react'
 
 function withVideoRecorder (WrappedComponent) {
@@ -10,7 +12,7 @@ function withVideoRecorder (WrappedComponent) {
       this.mediaStream = null
       this.blob = null
 
-      // Video refs
+      // Element refs
       this.previewRef = React.createRef()
       this.recordedRef = React.createRef()
 
@@ -26,7 +28,17 @@ function withVideoRecorder (WrappedComponent) {
       this.pauseMedia = this.pauseMedia.bind(this)
       this.record = this.record.bind(this)
       this.stopRecord = this.stopRecord.bind(this)
-      this.saveVideoBlob = this.saveVideoBlob.bind(this)
+      this.saveMediaBlob = this.saveMediaBlob.bind(this)
+
+      // Config
+      this.blobMediaType = null
+      this.videoType = 'video/webm'
+      this.audioType = 'audio/wav'
+
+      const { audio, video } = props.constraints
+      if (video) this.blobMediaType = this.videoType
+      else if (audio) this.blobMediaType = this.audioType
+      else throw new Error('No audio or video constraints found.')
     }
 
     componentDidMount () {
@@ -37,6 +49,7 @@ function withVideoRecorder (WrappedComponent) {
     async askPermissions () {
       if (!this.isMediaActive()) {
         if (!this.hasUserMedia()) throw new Error('Navigator does not support video media record.')
+        // todo: only check for what is needed
         if (!await this.hasAudioVideoDevices()) throw new Error('Not audio/video input devices detected.')
 
         // Ask user for permissions
@@ -66,13 +79,13 @@ function withVideoRecorder (WrappedComponent) {
       if (this.isMediaActive()) {
         if (this.state.isRecording) return console.error('Media currently recording...')
         const recorder = new window.MediaRecorder(this.mediaStream)
-        let videoChunks = []
+        let mediaChunks = []
 
-        recorder.ondataavailable = evt => videoChunks.push(evt.data)
+        recorder.ondataavailable = evt => mediaChunks.push(evt.data)
         recorder.onstart = this.onRecordStart
 
         const stopped = new Promise((resolve, reject) => {
-          recorder.onstop = evt => resolve(videoChunks)
+          recorder.onstop = evt => resolve(mediaChunks)
           recorder.onerror = event => reject(event.name)
         })
         // stop recording - timer
@@ -82,14 +95,14 @@ function withVideoRecorder (WrappedComponent) {
         recorder.start()
 
         stopped
-          .then(this.saveVideoBlob)
+          .then(this.saveMediaBlob)
           .then(this.onRecordStop)
       } else console.error('No media to record.')
     }
     // TODO: add onSaved as prop to save
-    saveVideoBlob (videoChunks) {
+    saveMediaBlob (mediaChunks) {
       try {
-        this.blob = new window.Blob(videoChunks, { type: 'video/webm' })
+        this.blob = new window.Blob(mediaChunks, { type: this.blobMediaType})
         if (this.recordedRef.current) this.recordedRef.current.src = URL.createObjectURL(this.blob)
         return this.blob
       } catch (e) {
@@ -125,6 +138,7 @@ function withVideoRecorder (WrappedComponent) {
       return !!(this.mediaStream && this.mediaStream.active)
     }
     hasAudioVideoDevices () {
+      // TODO: only ask for what is needed
       let hasAudio = false
       let hasVideo = false
       return navigator.mediaDevices.enumerateDevices()
@@ -147,10 +161,17 @@ function withVideoRecorder (WrappedComponent) {
     // --- }}}
 
     render () {
-      const videoRecorder = {
+      const recordedElement = (this.blobMediaType === this.videoType)
+        ? <video ref={this.recordedRef} controls />
+        : <audio ref={this.recordedRef} controls />
+      const previewElement = (this.blobMediaType === this.videoType)
+        ? <video ref={this.previewRef} autoPlay playsInline muted />
+        : null
+
+      const videoRecorderProps = {
+        recordedElement,
+        previewElement,
         isRecording: this.state.isRecording,
-        videoRecordedElement: <video ref={this.recordedRef} controls />,
-        videoPreviewElement: <video ref={this.previewRef} autoPlay playsInline muted />,
         askPermissions: this.askPermissions,
         closeMedia: this.closeMedia,
         pauseMedia: this.pauseMedia,
@@ -160,7 +181,7 @@ function withVideoRecorder (WrappedComponent) {
         onRecordStop: this.setRecordStopCb
       }
       const { recordDelayMs, recordTimerMs, constraints, ...passedProps } = this.props
-      return <WrappedComponent videoRecorder={videoRecorder} {...passedProps} />
+      return <WrappedComponent videoRecorder={videoRecorderProps} {...passedProps} />
     }
   }
 }

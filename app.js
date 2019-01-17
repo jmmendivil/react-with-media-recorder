@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import withVideoRecorder from './WithVideoRecorder'
+import WithMediaRecorder from './WithMediaRecorder'
 
 const videoConstraints = {
   audio: true,
@@ -39,7 +39,7 @@ class ControlsExample extends React.Component {
 }
 
 var mountNode = document.getElementById('app')
-const ControlsWithVideo = withVideoRecorder(ControlsExample)
+const ControlsWithVideo = WithMediaRecorder(ControlsExample)
 ReactDOM.render(
   <ControlsWithVideo
     constraints={videoConstraints}

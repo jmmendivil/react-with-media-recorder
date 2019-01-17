@@ -1,11 +1,12 @@
 {
-  "name": "withmediarecorder",
+  "name": "react-with-mediarecorder",
   "version": "1.0.0",
   "description": "React HOC for MediaRecorder interface",
-  "main": "app.js",
+  "main": "dist/WithMediaRecorder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "build": "parcel build WithMediaRecorder.js" 
   },
   "keywords": [
     "react",

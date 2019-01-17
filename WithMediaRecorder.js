@@ -1,9 +1,8 @@
-// TODO:
-// - add error boundary
+// TODO: add error boundary
 import React from 'react'
 
-function withVideoRecorder (WrappedComponent) {
-  return class VideoRecorder extends React.Component {
+function WithMediaRecorder (WrappedComponent) {
+  return class WithMediaRecorder extends React.Component {
     constructor (props) {
       super(props)
       this.state = { isRecording: false }
@@ -168,7 +167,7 @@ function withVideoRecorder (WrappedComponent) {
         ? <video ref={this.previewRef} autoPlay playsInline muted />
         : null
 
-      const videoRecorderProps = {
+      const mediaRecorderProps = {
         recordedElement,
         previewElement,
         isRecording: this.state.isRecording,
@@ -181,9 +180,9 @@ function withVideoRecorder (WrappedComponent) {
         onRecordStop: this.setRecordStopCb
       }
       const { recordDelayMs, recordTimerMs, constraints, ...passedProps } = this.props
-      return <WrappedComponent videoRecorder={videoRecorderProps} {...passedProps} />
+      return <WrappedComponent mediaRecorder={mediaRecorderProps} {...passedProps} />
     }
   }
 }
 
-export default withVideoRecorder
+export default WithMediaRecorder

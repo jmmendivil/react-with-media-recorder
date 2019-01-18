@@ -20,6 +20,7 @@ function WithMediaRecorder (WrappedComponent) {
       this.setRecordStartCb = this.setRecordStartCb.bind(this)
       this.onRecordStop = this.onRecordStop.bind(this)
       this.setRecordStopCb = this.setRecordStopCb.bind(this)
+      this.setUserAcceptsCb = this.setUserAcceptsCb.bind(this)
 
       // Actions
       this.askPermissions = this.askPermissions.bind(this)
@@ -55,6 +56,7 @@ function WithMediaRecorder (WrappedComponent) {
         try {
           this.mediaStream = await window.navigator.mediaDevices.getUserMedia(this.props.constraints)
           this.recordDelay()
+          if (typeof this.userAcceptsCb === 'function') this.userAcceptsCb(this.mediaStream)
           if (this.previewRef.current) this.previewRef.current.srcObject = this.mediaStream
         } catch (e) {
           if (e === 'NotAllowedError') throw new Error('Media access not allowed, cant record.')
@@ -101,7 +103,7 @@ function WithMediaRecorder (WrappedComponent) {
     // TODO: add onSaved as prop to save
     saveMediaBlob (mediaChunks) {
       try {
-        this.blob = new window.Blob(mediaChunks, { type: this.blobMediaType})
+        this.blob = new window.Blob(mediaChunks, { type: this.blobMediaType })
         if (this.recordedRef.current) this.recordedRef.current.src = URL.createObjectURL(this.blob)
         return this.blob
       } catch (e) {
@@ -127,6 +129,7 @@ function WithMediaRecorder (WrappedComponent) {
     }
     setRecordStartCb (cb) { this.recordStartCb = cb }
     setRecordStopCb (cb) { this.recordStopCb = cb }
+    setUserAcceptsCb (cb) { this.userAcceptsCb = cb }
     // --- }}}
 
     // Helpers {{{
@@ -177,7 +180,8 @@ function WithMediaRecorder (WrappedComponent) {
         record: this.record,
         stopRecord: this.stopRecord,
         onRecordStart: this.setRecordStartCb,
-        onRecordStop: this.setRecordStopCb
+        onRecordStop: this.setRecordStopCb,
+        onUserAccepts: this.setUserAcceptsCb
       }
       const { recordDelayMs, recordTimerMs, constraints, ...passedProps } = this.props
       return <WrappedComponent mediaRecorder={mediaRecorderProps} {...passedProps} />

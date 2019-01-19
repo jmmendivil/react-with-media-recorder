@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel index.html",
-    "build": "parcel build WithMediaRecorder.js"
+    "build": "parcel build WithMediaRecorder.js",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "react",

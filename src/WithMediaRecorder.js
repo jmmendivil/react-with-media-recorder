@@ -1,7 +1,7 @@
 // TODO: add error boundary
 import React from 'react'
 
-function WithMediaRecorder (WrappedComponent) {
+function WithMediaRecorder (WrappedComponent, props) {
   return class WithMediaRecorder extends React.Component {
     constructor (props) {
       super(props)

@@ -5,6 +5,13 @@ React Higher-Order Component for the [MediaStream Recording API](https://develop
 
 _Capture audio or video from React Component_.
 
+> Note: As of today _(Abril 2019_) the only browsers with MediaRecorder support are:
+>- Chrome 49+
+>- Firefox 30+
+>- Opera 36+
+>
+>Go to [caniuse](https://caniuse.com/#feat=mediarecorder) to get updated info about support.
+
 Install
 ---
 ```

@@ -4,7 +4,6 @@
   "description": "React HOC for MediaRecorder interface",
   "main": "dist/WithMediaRecorder.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel example/index.html",
     "build": "parcel build src/WithMediaRecorder.js",
     "prepublish": "npm run build",

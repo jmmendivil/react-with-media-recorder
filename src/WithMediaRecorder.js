@@ -35,6 +35,8 @@ function WithMediaRecorder (WrappedComponent, props) {
       this.videoType = 'video/webm'
       this.audioType = 'audio/wav'
 
+      this.waitTimeout = null
+
       const { audio, video } = props.constraints
       if (video) this.blobMediaType = this.videoType
       else if (audio) this.blobMediaType = this.audioType
@@ -153,7 +155,10 @@ function WithMediaRecorder (WrappedComponent, props) {
         })
     }
     wait (delay) {
-      return new Promise(resolve => setTimeout(resolve, delay))
+      clearTimeout(this.waitTimeout)
+      return new Promise(resolve => {
+        this.waitTimeout = setTimeout(resolve, delay)
+      })
     }
     recordDelay () {
       if (this.props.recordDelayMs && this.isMediaActive()) {

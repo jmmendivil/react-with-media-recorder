@@ -1,13 +1,14 @@
 {
   "name": "react-with-mediarecorder",
-  "version": "1.1.1",
+  "version": "1.1.0",
   "description": "React HOC for MediaRecorder interface",
   "main": "dist/WithMediaRecorder.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "parcel example/index.html",
     "build": "parcel build src/WithMediaRecorder.js",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "release": "np"
   },
   "keywords": [
     "react",
@@ -31,7 +32,9 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "np": "^5.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jmmendivil/react-with-media-recorder.git"
